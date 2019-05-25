@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const nanoid = require('nanoid');
 
-const SALT_WORK_FACTOR = 10;
-
 const UserSchema = new Schema({
     username: {
         type: String,
@@ -27,14 +25,18 @@ const UserSchema = new Schema({
     facebookId: {
         type: String
     },
-    avatarImage: {
+    avatar: {
         type: String
     },
-    displayName: {
+    name: {
         type: String,
         required: true
     }
 });
+
+UserSchema.methods.checkPassword = function(password) {
+    return password === this.password;
+};
 
 UserSchema.set('toJSON', {
     transform: (doc, ret, options) => {

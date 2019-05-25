@@ -82,8 +82,8 @@ router.post('/facebookLogin', async (req, res) => {
                 username: req.body.email || req.body.id,
                 password: nanoid(),
                 facebookId: req.body.id,
-                avatarImage: req.body.picture.data.url,
-                displayName: req.body.name
+                avatar: req.body.picture.data.url,
+                name: req.body.name
             });
         }
         user.generateToken();
@@ -91,7 +91,6 @@ router.post('/facebookLogin', async (req, res) => {
 
         return res.send({message: 'Login or Register successfully', user});
     } catch (e) {
-        console.log('3');
         return res.status(500).send({message: 'Something went wrong'});
     }
 });
