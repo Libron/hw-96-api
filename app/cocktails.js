@@ -107,4 +107,43 @@ router.delete('/', [auth, permit('admin')], async (req, res) => {
     }
 });
 
+router.post('/:id/rate', auth, async (req, res) => {
+    try {
+        const cocktail = await Cocktail.findById(req.params.id);
+        if (!cocktail) {
+            return res.sendStatus(404);
+        }
+
+        let rating = [];
+        if (!cocktail.rating) {
+            rating.push({
+                user: req.user._id,
+                rate: parseInt(req.body.rate)
+            });
+
+            cocktail.rating = rating;
+        } else {
+
+            rating = [...cocktail.rating];
+            const userRateIndx = rating.findIndex(rate => req.user._id.equals(rate.user));
+            if (userRateIndx === -1) {
+                rating.push({
+                    user: req.user._id,
+                    rate: parseInt(req.body.rate)
+                });
+
+                cocktail.rating = [...cocktail.rating, ...rating];
+            } else {
+                cocktail.rating[userRateIndx].rate = parseInt(req.body.rate);
+            }
+        }
+
+        await cocktail.save();
+        cocktail.rate = parseInt(req.body.rate);
+        return res.send(cocktail);
+    } catch (e) {
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;

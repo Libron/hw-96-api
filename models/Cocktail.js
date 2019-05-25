@@ -14,6 +14,13 @@ const CocktailSchema = new Schema({
     ingredients: [
         {name: String, amount: String, key: String}
     ],
+    rating: [
+        {user: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            }, rate: Number}
+    ],
     recipe: {
         type: String,
         required: true,
